@@ -1,0 +1,135 @@
+{% extends 'includes/_layout.html' %}
+{% block title %}Expense_Tracker - Home{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+{% block body %}
+<div class="main container">
+    <div class="hero-section">
+        <div class="card">
+            <div class="card-title"><h3 class="text-center">{% if itemId %}Update Details{% else %}Add Item{% endif %}</h3></div>
+            <div class="card-body">
+                <form method="POST" {% if itemId %} action="{{ url_for('item_route.edit_item_details', itemId=itemId) }}"{% else %}action="{{ url_for('item_route.home') }}"{% endif %}>
+                    {{ form.hidden_tag() }}
+                    <div class="row">
+                        <div class="col">
+                        {{ form.name.label }} {{ form.name(size=20, class="form-control my-2") }}
+                        {% if form.name.errors %}
+                            <ul class="col">
+                            {% for error in form.name.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </div>
+                        <div class="col">
+                        {{ form.price.label }} {{ form.price(size=20, class="form-control my-2") }}
+                        {% if form.price.errors %}
+                            <ul class="errors">
+                            {% for error in form.price.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                        {{ form.category_name.label }} {{ form.category_name(class="form-control my-2") }}
+                        {% if form.category_name.errors %}
+                            <ul class="col">
+                            {% for error in form.category_name.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </div>
+                        <div class="col">
+                        {{ form.payment_mode.label }} {{ form.payment_mode(class="form-control my-2") }}
+                        {% if form.payment_mode.errors %}
+                            <ul class="errors">
+                            {% for error in form.payment_mode.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                        {{ form.bank_name.label }} {{ form.bank_name(class="form-control my-2") }}
+                        {% if form.bank_name.errors %}
+                            <ul class="col">
+                            {% for error in form.bank_name.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </div>
+                        <div class="col">
+                            {{ form.submit(class="form-control btn btn-primary my-3") }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% if user.item %}
+    <div class="container table-responsive">
+        <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Sr.</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Category</th>
+                <th scope="col">Payment</th>
+                <th scope="col">Pay with Bank</th>
+                <th scope="col">Date</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for item in user.item %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.price }}</td>
+                    {% if item.category.category_status == 1 %}
+                    <td>{{ item.category.name }}</td>
+                    {% endif %}
+                    {% if item.category.category_status == 2 %}
+                    <td>Not Available</td>
+                    {% endif %}
+                    {% if item.category.category_status == 3 %}
+                    <td>Details Deleted</td>
+                    {% endif %}
+                    <td>{{ item.payment_mode }}</td>
+                    {% if item.payment_mode == "cash" %}
+                    <td> - </td>
+                    {% else %}
+                    {% if item.bank.bank_status == 1 %}
+                    <td>{{ item.bank.name }}</td>
+                    {% endif %}
+                    {% if item.bank.bank_status == 2 %}
+                    <td>Not Available</td>
+                    {% endif %}
+                    {% if item.bank.bank_status == 3 %}
+                    <td>Details Deleted</td>
+                    {% endif %}
+                    {% endif %}
+                    <td>{{ item.transaction_date }}</td>
+                    <td><a href="{{ url_for('item_route.edit_item_details', itemId=item.id) }}">Edit</a></td>
+                    <td><a href="{{ url_for('item_route.delete_item_details', itemId=item.id) }}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>  
+    {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+{% endblock %}

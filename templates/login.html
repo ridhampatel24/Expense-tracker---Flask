@@ -1,0 +1,46 @@
+{% extends 'includes/_layout.html' %}
+{% block title %}Expense_Tracker - Login{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+{% block body %}
+<div class="main container">
+    <div class="hero-section">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="/login">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                    {{ form.email.label }} {{ form.email(size=20, class="form-control my-2") }}
+                    </div>
+                    {% if form.email.errors %}
+                        <ul class="errors">
+                        {% for error in form.email.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="form-group">
+                    {{ form.password.label }} {{ form.password(class="form-control my-2") }}
+                    {% if form.password.errors %}
+                        <ul class="errors">
+                        {% for error in form.password.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                    </div>
+                    {{ form.submit(class="form-control btn btn-primary my-3") }}
+                </form>
+                <div class="row justiy-content-center">
+                    <hr>
+                    <p class="text-center my-2">Or</p>
+                    <a href="{{ url_for('auth_route.signup') }}" class="btn btn-success">Register</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{% endblock %}

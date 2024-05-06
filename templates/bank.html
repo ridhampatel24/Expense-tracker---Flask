@@ -1,0 +1,183 @@
+{% extends 'includes/_layout.html' %}
+{% block title %}Expense_Tracker - Bank{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+<style>
+    body .main{
+        flex: none;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="main container">
+    <div class="hero-section">
+        <div class="card">
+            <div class="card-title"><h3 class="text-center">{% if bankId %}Update Details{% else %}Add Bank{% endif %}</h3></div>
+            <div class="card-body">
+                <form method="POST"{% if bankId %} action="{{ url_for('bank_route.edit_bank_details', bankId=bankId) }}"{% else %}action="{{ url_for('bank_route.bank') }}"{% endif %}>
+                    {{ form.hidden_tag() }}
+                    <div class="row">
+                        <div class="col">
+                        {{ form.name.label }} {{ form.name(size=20, class="form-control my-2") }}
+                        {% if form.name.errors %}
+                            <ul class="col">
+                            {% for error in form.name.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </div>
+                        <div class="col">
+                        {{ form.balance.label }} {{ form.balance(size=20, class="form-control my-2") }}
+                        {% if form.balance.errors %}
+                            <ul class="errors">
+                            {% for error in form.balance.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                        {{ form.submit(class="form-control btn btn-primary my-3") }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% if user.bank %}
+    <div class="container table-responsive">
+        <h3>Bank details</h3>
+        <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Bank Name</th>
+                <th scope="col">Balance</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for bank in user.bank %}
+                {% if bank.bank_status == 1 %}
+                <tr>
+                    <td>{{ bank.name }}</td>
+                    <td>{{ bank.balance }}</td>
+                    <td><a href="{{ url_for('bank_route.edit_bank_details', bankId=bank.id) }}">Edit</a></td>
+                    <td><a href="{{ url_for('bank_route.delete_bank_details', bankId=bank.id) }}">Delete</a></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if user.deleted_bank != 0 %}
+    <div class="container table-responsive">
+        <h3>Deleted category</h3>
+        <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Bank Name</th>
+                <th scope="col">Balance</th>
+                <th scope="col">Restore</th>
+                <th scope="col">Delete Permanently</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for bank in user.bank %}
+                {% if bank.bank_status == 2 %}
+                <tr>
+                    <td>{{ bank.name }}</td>
+                    <td>{{ bank.balance }}</td>
+                    <td><a href="{{ url_for('bank_route.restore_bank_details', bankId=bank.id) }}">Restore</a></td>
+                    <td><a href="{{ url_for('bank_route.parmanently_delete_bank_details', bankId=bank.id) }}">Delete</a></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    {% endif %}
+</div>
+<div class="container">
+    <div class="text-center">
+        <form action="{{ url_for('bank_route.filter_items_by_bank') }}" method="post">
+            {{ filter_form.hidden_tag() }}
+            <h2 class="text-center">{{ filter_form.filter_name.label }}</h2>
+            <div class="row align-items-center">
+                <div class="col">
+                {{ filter_form.filter_name(class="form-control my-2") }}
+                {% if filter_form.filter_name.errors %}
+                    <ul class="col">
+                    {% for error in filter_form.filter_name.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                </div>
+                <div class="col">
+                {{ filter_form.submit(class="form-control btn btn-primary my-3") }}
+                </div>
+            </div>
+        </form>
+    </div>
+    {% if filter_items %}
+    <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Sr.</th>
+            <th scope="col">Item Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Category</th>
+            <th scope="col">Payment</th>
+            <th scope="col">Pay with Bank</th>
+            <th scope="col">Date</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for item in filter_items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.price }}</td>
+                {% if item.category.category_status == 1 %}
+                <td>{{ item.category.name }}</td>
+                {% endif %}
+                {% if item.category.category_status == 2 %}
+                <td>Not Available</td>
+                {% endif %}
+                {% if item.category.category_status == 3 %}
+                <td>Details Deleted</td>
+                {% endif %}
+                <td>{{ item.payment_mode }}</td>
+                {% if item.payment_mode == "cash" %}
+                <td> - </td>
+                {% else %}
+                {% if item.bank.bank_status == 1 %}
+                <td>{{ item.bank.name }}</td>
+                {% endif %}
+                {% if item.bank.bank_status == 2 %}
+                <td>Not Available</td>
+                {% endif %}
+                {% if item.bank.bank_status == 3 %}
+                <td>Details Deleted</td>
+                {% endif %}
+                {% endif %}
+                <td>{{ item.transaction_date }}</td>
+                <td><a href="{{ url_for('item_route.edit_item_details', itemId=item.id) }}">Edit</a></td>
+                <td><a href="{{ url_for('item_route.delete_item_details', itemId=item.id) }}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+{% endblock %}

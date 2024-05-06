@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand ms-2 text-lg-left" href="/">Expense Tracker</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        {% if isAuthorize %}
+        <li class="nav-item active">
+          <a class="nav-link" href="{{ url_for('item_route.home') }}">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('category_route.category') }}">Categroy</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('bank_route.bank') }}">Bank</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('item_route.history', page=0) }}">History</a>
+        </li>
+        {% if os.environ.get("DATABASE") != "POSTGRES" %}
+        <!-- Search form -->
+        {% if g.search_form %}
+        <form class="navbar-form navbar-left" action="{{ url_for('item_route.search') }}" method="get">
+          <div class="form-group">
+            {{ g.search_form.q(size=20, class_='form-control') }}
+          </div>
+        </form>
+        {% endif %}
+        {% endif %}
+        <!-- End of the search form -->
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('auth_route.logout') }}">Logout</a>
+        </li>
+        <li class="nav-item">
+            <img src="{{ profile_photo }}" alt="User_IMG" class="img-thumbnail float-right navbar_profile_photo me-3">
+        </li>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth_route.login') }}">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth_route.signup') }}">Signup</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>

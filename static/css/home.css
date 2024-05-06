@@ -1,0 +1,8 @@
+body .main {
+    align-items: start;
+}
+
+.main .hero-section .card {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}

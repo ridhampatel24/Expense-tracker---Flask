@@ -1,0 +1,61 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    min-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+nav {
+    background-color: rgba(202, 202, 202, 0.5) !important;
+}
+
+nav ul {
+    align-items: center;
+}
+
+nav .navbar-brand,
+nav ul li .nav-link {
+    color: rgb(76, 80, 79) !important;
+    font-size: large;
+    font-weight: bold;
+}
+
+.navbar_profile_photo {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+}
+
+body .main {
+    flex: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-section .card {
+    padding: 5rem 4rem;
+    background-color: rgba(68, 64, 64, 0.5);
+    color: aliceblue;
+    border-radius: 2px solid rgb(46, 44, 44);
+}
+
+.hero-section .card:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: rgb(22, 21, 21);
+}
+
+.hero-section .card a{
+    color: aliceblue;
+    text-decoration: none;
+}
+
+.hero-section .card:hover a{
+    color: rgb(22, 21, 21);
+}

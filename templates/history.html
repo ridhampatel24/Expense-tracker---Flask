@@ -1,0 +1,65 @@
+{% extends 'includes/_layout.html' %}
+{% block title %}Expense_Tracker - Bank{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+{% block body %}
+<div class="container main flex-column table-responsive">
+    <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Sr.</th>
+            <th scope="col">Item Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Category</th>
+            <th scope="col">Payment</th>
+            <th scope="col">Pay with Bank</th>
+            <th scope="col">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ ((pagination["offset"]*page) + loop.index) }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.price }}</td>
+                {% if item.category.category_status == 1 %}
+                <td>{{ item.category.name }}</td>
+                {% endif %}
+                {% if item.category.category_status == 2 %}
+                <td>Not Available</td>
+                {% endif %}
+                {% if item.category.category_status == 3 %}
+                <td>Details Deleted</td>
+                {% endif %}
+                <td>{{ item.payment_mode }}</td>
+                {% if item.payment_mode == "cash" %}
+                <td> - </td>
+                {% else %}
+                {% if item.bank.bank_status == 1 %}
+                <td>{{ item.bank.name }}</td>
+                {% endif %}
+                {% if item.bank.bank_status == 2 %}
+                <td>Not Available</td>
+                {% endif %}
+                {% if item.bank.bank_status == 3 %}
+                <td>Details Deleted</td>
+                {% endif %}
+                {% endif %}
+                <td>{{ item.transaction_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+      <div class="container row pagination_btns">
+        {% if pagination["prev_btn_show"] %}
+        <a href="{{ url_for('item_route.history', page=page-1) }}" class="btn px-3 py-2 btn-success ms-1" style="width:fit-content">Previous</a>
+        {% endif %}
+        {% if pagination["next_btn_show"] %}
+        <a href="{{ url_for('item_route.history', page=page+1) }}" class="btn px-3 py-2 btn-success ms-auto me-1" style="width:fit-content">Next</a>
+        {% endif %}
+      </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'includes/_layout.html' %}
+{% block title %}Expense_Tracker{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+{% block body %}
+<div class="main container">
+    <div class="hero-section">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Hello Everyone, This is our expense tracker</h5>
+                <p class="card-text">To manage the budget list the track the expense.</p>
+                <div class="row justiy-content-center">
+                    <a href="{{ url_for('auth_route.login') }}" class="btn btn-success">Login</a>
+                    <p class="text-center my-2">Or</p>
+                    <a href="{{ url_for('auth_route.signup') }}" class="btn btn-success">Register</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='script/main.js') }}"></script>
+{% endblock %}
