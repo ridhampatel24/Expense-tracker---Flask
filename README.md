@@ -1,5 +1,5 @@
 # Expense Tracker
-## Setups for project:
+## Setup steps for project:
 1. Create venv file
 2. install requirement dependencies 
     - `pip install -r requirements.txt`
