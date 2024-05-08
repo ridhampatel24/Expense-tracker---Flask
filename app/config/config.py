@@ -18,4 +18,4 @@ class Config:
     JWT_SECRET_KEY = "super-secret"
     JWT_ACCESS_COOKIE_NAME = "x-access-token"
     # per page item
-    PER_PAGE_ITEM_VIEW = 3
+    PER_PAGE_ITEM_VIEW = 5

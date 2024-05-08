@@ -24,7 +24,7 @@ class Item(db.Model):
         default=None,
     )
     user_id = db.Column(
-        db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+        db.Integer, db.ForeignKey("userprofile.id", ondelete="CASCADE"), nullable=False
     )
     transaction_date = db.Column(
         db.Date, nullable=False, default=datetime.today().strftime("%Y-%m-%d")

@@ -8,7 +8,7 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(30), nullable=False)
     owner_id = db.Column(
-        db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+        db.Integer, db.ForeignKey("userprofile.id", ondelete="CASCADE"), nullable=False
     )
     category_status = db.Column(db.Integer, nullable=False, default=1)
     item = db.relationship("Item", cascade="all,delete", backref="category", lazy=True)

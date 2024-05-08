@@ -3,7 +3,7 @@ from functools import wraps
 import jwt
 import bcrypt
 from app import app
-from app.models.user import User
+from app.models.user import UserInfo
 
 
 def have_token(f):
@@ -40,7 +40,7 @@ def token_required(f):
 
         try:
             data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
-            current_user = User.query.filter_by(id=data["public_id"]).first()
+            current_user = UserInfo.query.filter_by(id=data["public_id"]).first()
         except:
             flash("Unauthorize user, Your token is not authorize", "danger")
             return redirect(url_for("auth_route.login"))

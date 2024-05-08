@@ -45,6 +45,9 @@ def category(user):
     category_form = AddCategory()
     filter_form = FilterForm()
     if category_form.validate_on_submit():
+        if category_form.name.data.lower() in [category.name.lower() for category in user.category if category.category_status in [1, 2]]:
+            flash("Category name already exists!", "warning")
+            return redirect(url_for("category_route.category"))
         add_category = Category(name=category_form.name.data, owner_id=user.id)
         db.session.add(add_category)
         db.session.commit()
@@ -74,9 +77,14 @@ def edit_category_details(user, categoryId):
     category_form.submit.label.text = "Update Details"
     if category_form.validate_on_submit():
         isUpdate = False
+        is_alread_category = False
+        for category in user.category:
+            if category.name.lower() == category_form.name.data.lower() and category.status in [1, 2]:
+                is_alread_category = True
         for category in user.category:
             if category.id == categoryId:
-                category.name = category_form.name.data
+                if category.name.lower() != category_form.name.data.lower() and not is_alread_category:
+                    category.name = category_form.name.data
                 isUpdate = True
         if not isUpdate:
             flash("Unauthorize access !", "danger")

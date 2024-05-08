@@ -18,17 +18,6 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('item_route.history', page=0) }}">History</a>
         </li>
-        {% if os.environ.get("DATABASE") != "POSTGRES" %}
-        <!-- Search form -->
-        {% if g.search_form %}
-        <form class="navbar-form navbar-left" action="{{ url_for('item_route.search') }}" method="get">
-          <div class="form-group">
-            {{ g.search_form.q(size=20, class_='form-control') }}
-          </div>
-        </form>
-        {% endif %}
-        {% endif %}
-        <!-- End of the search form -->
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('auth_route.logout') }}">Logout</a>
         </li>

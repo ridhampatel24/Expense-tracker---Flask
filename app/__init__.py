@@ -1,7 +1,6 @@
 from flask import Flask, render_template, g
 from flask_session import Session
 import os
-import pymysql
 
 app = Flask(
     __name__,

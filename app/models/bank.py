@@ -9,7 +9,7 @@ class Bank(db.Model):
     name = db.Column(db.String(50), nullable=False)
     balance = db.Column(db.Float(2), nullable=False)
     owner_id = db.Column(
-        db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+        db.Integer, db.ForeignKey("userprofile.id", ondelete="CASCADE"), nullable=False
     )
     item = db.relationship("Item", cascade="all,delete", backref="bank", lazy=True)
     bank_status = db.Column(db.Integer, nullable=False, default=1)

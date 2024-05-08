@@ -53,7 +53,7 @@ def filter_items_by_category(user):
 @category_route.route("/category_details/permanently_delete/<int:categoryId>")
 @token_required
 def parmanently_delete_category_details(user, categoryId):
-    popup = {"msg": "Bank details deleted permanently.", "category": "warning"}
+    popup = {"msg": "Category details deleted permanently.", "category": "warning"}
     return category_view.change_category_status(
         user=user, categoryId=categoryId, status=3, popup=popup
     )

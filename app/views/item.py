@@ -61,7 +61,7 @@ def home(user):
 
     categories_list.sort()
     banks_list.sort()
-    if len(banks_list) < 2:
+    if len(banks_list) == 0:
         item_form.payment_mode.choices = [("cash", "Cash")]
     item_form.category_name.choices = categories_list.copy()
     item_form.bank_name.choices = banks_list.copy()
@@ -88,13 +88,15 @@ def edit_item_details(user, itemId):
                 item.name = item_form.name.data
                 old_price = item.price
                 item.price = item_form.price.data
+                old_payment_mode = item.payment_mode
                 item.payment_mode = item_form.payment_mode.data
                 item_category = item_form.category_name.data
                 item_bank = item_form.bank_name.data or ""
-                for bank in user.bank:
-                    if bank.id == item.bank_id:
-                        bank.balance += float(old_price)
-                        break
+                if old_payment_mode.lower() == "upi":
+                    for bank in user.bank:
+                        if bank.id == item.bank_id:
+                            bank.balance += float(old_price)
+                            break
                 if item.payment_mode.lower() != "cash" and user.bank:
                     found_entry = False
                     for bank in user.bank:
@@ -108,6 +110,8 @@ def edit_item_details(user, itemId):
                             break
                     if not found_entry:
                         item.bank_id = None
+                if item.payment_mode.lower() == "cash":
+                    item.bank_id = None
                 if item.payment_mode.lower() != "cash" and item.bank_id is None:
                     item.payment_mode = "cash"
                 if user.category:
@@ -161,6 +165,8 @@ def edit_item_details(user, itemId):
         flash("Unauthorize access !", "danger")
         return redirect(url_for("item_route.home"))
 
+    if len(banks_list) == 0:
+        item_form.payment_mode.choices = [("cash", "Cash")]
     item_form.category_name.choices = categories_list.copy()
     item_form.bank_name.choices = banks_list.copy()
     return render_template(
@@ -174,8 +180,14 @@ def edit_item_details(user, itemId):
 
 
 def delete_item_details(user, itemId):
-    delete_item = Item.query.filter_by(id=itemId).delete()
+    delete_item = Item.query.filter_by(id=itemId, user_id=user.id).first()
     if delete_item:
+        if delete_item.payment_mode != "cash":
+            for bank in user.bank:
+                if bank.id == delete_item.bank_id:
+                    bank.balance += float(delete_item.price)
+                    break
+        db.session.delete(delete_item)
         flash("Item deleted.", "warning")
         db.session.commit()
     else:

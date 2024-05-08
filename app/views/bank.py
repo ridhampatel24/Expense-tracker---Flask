@@ -45,6 +45,9 @@ def bank(user):
     bank_form = AddBank()
     filter_form = FilterForm()
     if bank_form.validate_on_submit():
+        if bank_form.name.data.lower() in [bank.name.lower() for bank in user.bank if bank.bank_status in [1, 2]]:
+            flash("Bank name already exists!", "warning")
+            return redirect(url_for("bank_route.bank"))
         add_bank = Bank(
             name=bank_form.name.data, balance=bank_form.balance.data, owner_id=user.id
         )
@@ -80,11 +83,20 @@ def edit_bank_details(user, bankId):
     banks_list = []
     if bank_form.validate_on_submit():
         isUpdate = False
+        is_alread_bank = False
+        for bank in user.bank:
+            if bank.name.lower() == bank_form.name.data.lower() and bank.bank_status in [1, 2]:
+                is_alread_bank = True
         for bank in user.bank:
             if bank.id == bankId:
-                bank.name = bank_form.name.data
-                bank.balance = bank_form.balance.data
-                isUpdate = True
+                if bank.name.lower() != bank_form.name.data.lower() and not is_alread_bank:
+                    bank.name = bank_form.name.data
+                    bank.balance = bank_form.balance.data
+                    isUpdate = True
+                else:
+                    bank.balance = bank_form.balance.data
+                    isUpdate = True
+                break
         if not isUpdate:
             flash("Unauthorize access !", "danger")
             return redirect(url_for("bank_route.ebank"))
